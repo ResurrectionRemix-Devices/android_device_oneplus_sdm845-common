@@ -38,3 +38,4 @@ etc/permissions/qti_permissions.xml
 etc/permissions/privapp-permissions-qti.xml
 framework/qcrilhook.jar
 -priv-app/qcrilmsgtunnel/qcrilmsgtunnel.apk
+

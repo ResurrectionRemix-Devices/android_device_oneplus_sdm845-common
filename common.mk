@@ -128,6 +128,9 @@ PRODUCT_PACKAGES += \
     ims-ext-common \
     qti-telephony-common
 
+PRODUCT_BOOT_JARS += \
+    telephony-ext
+
 # tri-state-key
 PRODUCT_PACKAGES += \
     KeyHandler \
