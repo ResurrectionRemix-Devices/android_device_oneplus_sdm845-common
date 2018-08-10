@@ -11,6 +11,10 @@ on boot
     # OTG
     write /sys/class/power_supply/usb/otg_switch 1
 
+    # Portrait Mode
+    write /data/misc/camera/client_package_name "com.oneplus.camera"
+    chmod 0444 /data/misc/camera/client_package_name
+
 on charger
     write /sys/class/backlight/panel0-backlight/brightness 150
 
