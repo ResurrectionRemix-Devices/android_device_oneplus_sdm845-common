@@ -44,8 +44,8 @@ PRODUCT_PACKAGES += \
     otapreopt_script
 
 # ANT+
-PRODUCT_PACKAGES += \
-    AntHalService
+#PRODUCT_PACKAGES += \
+#    AntHalService
 
 # Audio
 PRODUCT_PACKAGES += \
