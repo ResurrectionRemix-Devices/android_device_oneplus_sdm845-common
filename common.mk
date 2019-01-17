@@ -102,17 +102,16 @@ PRODUCT_PACKAGES += \
     Tag \
     com.android.nfc_extras
 
-# Pocket mode
-PRODUCT_PACKAGES += \
-    OnePlusPocketMode
-
 # Power
 PRODUCT_PACKAGES += \
     power.qcom:64
 
-# QTI
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/qti_whitelist.xml:system/etc/sysconfig/qti_whitelist.xml
+# Telephony
+PRODUCT_PACKAGES += \
+    telephony-ext
+
+PRODUCT_BOOT_JARS += \
+    telephony-ext
 
 # Spectrum
 PRODUCT_PACKAGES += \

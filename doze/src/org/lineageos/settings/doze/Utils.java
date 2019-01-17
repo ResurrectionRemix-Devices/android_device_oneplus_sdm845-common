@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2015 The CyanogenMod Project
- *               2017-2018 The LineageOS Project
+ * Copyright (C) 2015 The CyanogenMod Project
+ *               2017-2019 The LineageOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,9 @@ import android.support.v7.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.android.internal.hardware.AmbientDisplayConfiguration;
+
+import static android.provider.Settings.Secure.DOZE_ALWAYS_ON;
 import static android.provider.Settings.Secure.DOZE_ENABLED;
 
 public final class Utils {
@@ -35,7 +38,13 @@ public final class Utils {
 
     private static final String DOZE_INTENT = "com.android.systemui.doze.pulse";
 
+    protected static final String ALWAYS_ON_DISPLAY = "always_on_display";
+
+    protected static final String CATEG_PICKUP_SENSOR = "pickup_sensor";
+    protected static final String CATEG_PROX_SENSOR = "proximity_sensor";
+
     protected static final String GESTURE_PICK_UP_KEY = "gesture_pick_up";
+    protected static final String GESTURE_POCKET_KEY = "gesture_pocket";
 
     protected static void startService(Context context) {
         if (DEBUG) Log.d(TAG, "Starting service");
@@ -50,7 +59,7 @@ public final class Utils {
     }
 
     protected static void checkDozeService(Context context) {
-        if (isDozeEnabled(context) && isPickUpEnabled(context)) {
+        if (isDozeEnabled(context) && !isAlwaysOnEnabled(context) && areGesturesEnabled(context)) {
             startService(context);
         } else {
             stopService(context);
@@ -73,14 +82,35 @@ public final class Utils {
                 new UserHandle(UserHandle.USER_CURRENT));
     }
 
-    protected static void enablePickUp(Context context, boolean enable) {
-        PreferenceManager.getDefaultSharedPreferences(context).edit()
-                .putBoolean(GESTURE_PICK_UP_KEY, enable).apply();
+    protected static boolean enableAlwaysOn(Context context, boolean enable) {
+        return Settings.Secure.putIntForUser(context.getContentResolver(),
+                DOZE_ALWAYS_ON, enable ? 1 : 0, UserHandle.USER_CURRENT);
+    }
+
+    protected static boolean isAlwaysOnEnabled(Context context) {
+        return Settings.Secure.getIntForUser(context.getContentResolver(),
+                DOZE_ALWAYS_ON, 0, UserHandle.USER_CURRENT) != 0;
+    }
+
+    protected static boolean alwaysOnDisplayAvailable(Context context) {
+        return new AmbientDisplayConfiguration(context).alwaysOnAvailable();
+    }
+
+    protected static boolean isGestureEnabled(Context context, String gesture) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(gesture, false);
     }
 
     protected static boolean isPickUpEnabled(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(GESTURE_PICK_UP_KEY, false);
+        return isGestureEnabled(context, GESTURE_PICK_UP_KEY);
+    }
+
+    protected static boolean isPocketEnabled(Context context) {
+        return isGestureEnabled(context, GESTURE_POCKET_KEY);
+    }
+
+    public static boolean areGesturesEnabled(Context context) {
+        return isPickUpEnabled(context) || isPocketEnabled(context);
     }
 
     protected static Sensor getSensor(SensorManager sm, String type) {
